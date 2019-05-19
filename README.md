@@ -1,3 +1,24 @@
+## Changes made
+
+**Part 1**
+- added attribute media="print" to css
+- added attribute async to scripts
+- added preconnect hint for fetching resources from fonts.gstatic.com
+- added font-display descriptor for immediate text drawing
+- images resized and compressed
+- added explicit image sizes with width and height attributes for ```<img>```
+- moved inline script to bottom
+
+**Part 2**
+
+Two major issues that led to sub-60fps performance are fixed:
+
+- moved ```scrollTop``` variable out of the loop. It resulted in approximately 20 times faster frames generation according to User Timing API
+
+- reworked ```resizePizzas``` function. Resulted in 50 times faster frames generation according to User Timing API
+
+PageInsights score is 100 for both pages.
+
 ## Website Performance Optimization portfolio project
 
 Your challenge, if you wish to accept it (and we sure hope you will), is to optimize this online portfolio for speed! In particular, optimize the critical rendering path and make this page render as quickly as possible by applying the techniques you've picked up in the [Critical Rendering Path course](https://www.udacity.com/course/ud884).
