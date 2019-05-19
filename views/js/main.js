@@ -398,6 +398,7 @@ var pizzaElementGenerator = function(i) {
   return pizzaContainer;
 };
 
+var windowWidth = document.getElementById("randomPizzas").offsetWidth;
 // resizePizzas(size) is called when the slider in the "Our Pizzas" section of the website moves.
 var resizePizzas = function(size) {
   window.performance.mark("mark_start_resize");   // User Timing API function
@@ -421,14 +422,13 @@ var resizePizzas = function(size) {
 
   changeSliderLabel(size);
 
-   // Returns the size difference to change a pizza element from one size to another. Called by changePizzaSlices(size).
-  function determineDx (elem, size) {
+  // Returns new pizza element width from one size to another. Called by changePizzaSlices(size).
+  function determineNewWidth(elem, size) {
     var oldWidth = elem.offsetWidth;
-    var windowWidth = document.querySelector("#randomPizzas").offsetWidth;
     var oldSize = oldWidth / windowWidth;
 
     // Changes the slider value to a percent width
-    function sizeSwitcher (size) {
+    function sizeSwitcher(size) {
       switch(size) {
         case "1":
           return 0.25;
@@ -444,15 +444,16 @@ var resizePizzas = function(size) {
     var newSize = sizeSwitcher(size);
     var dx = (newSize - oldSize) * windowWidth;
 
-    return dx;
+    return oldWidth + dx;
   }
 
   // Iterates through pizza elements on the page and changes their widths
   function changePizzaSizes(size) {
-    for (var i = 0; i < document.querySelectorAll(".randomPizzaContainer").length; i++) {
-      var dx = determineDx(document.querySelectorAll(".randomPizzaContainer")[i], size);
-      var newwidth = (document.querySelectorAll(".randomPizzaContainer")[i].offsetWidth + dx) + 'px';
-      document.querySelectorAll(".randomPizzaContainer")[i].style.width = newwidth;
+    var newWidth = determineNewWidth(document.getElementById("pizza0"), size);
+    var pizzas = document.querySelectorAll(".randomPizzaContainer");
+    var pizzasLength = pizzas.length;
+    for (var i = 0; i < pizzasLength; i++) {
+      pizzas[i].style.width = `${newWidth}px`;
     }
   }
 
@@ -502,9 +503,9 @@ function updatePositions() {
   window.performance.mark("mark_start_frame");
 
   var items = document.querySelectorAll('.mover');
+  // document.body.scrollTop is no longer supported in Chrome.
+  var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
   for (var i = 0; i < items.length; i++) {
-    // document.body.scrollTop is no longer supported in Chrome.
-    var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
     var phase = Math.sin((scrollTop / 1250) + (i % 5));
     items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
   }
